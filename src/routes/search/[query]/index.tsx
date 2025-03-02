@@ -5,19 +5,19 @@ import type { DocumentHead } from "@builder.io/qwik-city";
 import { NewsCard } from "~/components/components/news-card";
 
 interface Article {
-  category: string;
-  title: string;
-  excerpt: string;
-  author: string;
-  time: string;
-  imageUrl: string;
-  imageFallbackStyle: { backgroundColor: string };
+  category?: string;
+  title?: string;
+  excerpt?: string;
+  author?: string;
+  time?: string;
+  imageUrl?: string;
+  imageFallbackStyle?: { backgroundColor?: string };
   description?:string;
 }
 
-export const useSearchResults = routeLoader$<Article[]>(async ({ params, env, status }) => {
+export const useSearchResults = routeLoader$<Article[]>(async ({ params,  status }) => {
   const query = decodeURIComponent(params.query);
-  const apiKey = "88051ca9c9d24521a4a114348dc941ac"
+  // const apiKey = "88051ca9c9d24521a4a114348dc941ac"
   const apikey1 = "0411bee098150a14b712ef9dbdc597ab";
   // https://api.mediastack.com/v1/news?access_key=0411bee098150a14b712ef9dbdc597ab&keywords=sport
 
@@ -99,24 +99,14 @@ export default component$(() => {
   );
 });
 
-export const head: DocumentHead = {
-  title: "QwikPulse - Search Results",
-  meta: [
-    {
-      name: "description",
-      content: "Search results for news articles on QwikPulse",
-    },
-  ],
-  documentHead: ({ params }) => {
-    const query = decodeURIComponent(params.query);
-    return {
-      title: `Search Results for "${query}" | QwikPulse`,
-      meta: [
-        {
-          name: "description",
-          content: `Find news articles related to "${query}" on QwikPulse`,
-        },
-      ],
-    };
-  },
+export const documentHead: DocumentHead = ({ params }) => {
+  return {
+    title: `Search Results for "${params.query}"`,
+    meta: [
+      {
+        name: "description",
+        content: `Search results for ${params.query}`,
+      },
+    ],
+  };
 };

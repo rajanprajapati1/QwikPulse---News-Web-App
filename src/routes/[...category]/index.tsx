@@ -1,8 +1,20 @@
 import { component$ } from "@builder.io/qwik"
-import { routeLoader$, useLocation } from "@builder.io/qwik-city"
+import { routeLoader$ } from "@builder.io/qwik-city"
 import { NewsCard } from "../../components/components/news-card"
 
-export const useCategoryNews = routeLoader$(async ({ params, query }) => {
+interface Article {
+  source?: { name: string };
+  title?: string;
+  description?: string;
+  author?: string | null;
+  publishedAt?: string;
+  urlToImage?: string | null;
+  url?: string;
+}
+
+export const useCategoryNews = routeLoader$<
+  Promise<{ articles: Article[]; category: string; query: string }>
+>(async ({ params, query }) => {
   const category = params.category || "general";
   const q = query.get("q") || "";
 
@@ -95,24 +107,22 @@ export const useCategoryNews = routeLoader$(async ({ params, query }) => {
 });
 
 export default component$(() => {
-  const location = useLocation()
-  const categoryNews = useCategoryNews()
+  const categoryNews:any = useCategoryNews()
 
   // Format category name for display
-  const formatCategoryName = (category: string) => {
-    if (!category || category === "latest") return "Latest News"
-    return category.charAt(0).toUpperCase() + category.slice(1)
-  }
+  const formatCategoryName = (category: string): string => {
+    if (!category || category === "latest") return "Latest News";
+    return category.charAt(0).toUpperCase() + category.slice(1);
+  };
 
-  // Get source name for display
-  const getSourceName = (article: any) => {
-    return article?.source?.name || "Unknown Source"
-  }
+  const getSourceName = (article: Article): string => {
+    return article?.source?.name || "Unknown Source";
+  };
 
   const displayTitle = categoryNews.value.query
     ? `Results for "${categoryNews.value.query}"`
-    : formatCategoryName(categoryNews.value.category)
-
+    : formatCategoryName(categoryNews.value.category);
+    
   return (
     <div class="min-h-screen bg-gray-50">
       {/* Header - Reuse the same header from index.tsx */}

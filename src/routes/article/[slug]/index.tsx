@@ -5,20 +5,20 @@ import type { DocumentHead } from "@builder.io/qwik-city";
 
 // Define the article type based on NewsAPI response
 interface Article {
-  title: string;
+  title?: string;
   category?: string; // NewsAPI doesn't provide this directly, we'll infer it
-  content: string | null;
-  publishedAt: string;
-  author: string | null;
-  urlToImage: string | null;
-  description: string | null;
+  content?: string | null;
+  publishedAt?: string;
+  author?: string | null;
+  urlToImage?: string | null;
+  description?: string | null;
 }
 
 // Fetch data from NewsAPI
-export const useArticleData = routeLoader$<Article | null>(async ({ params, status, env }) => {
+export const useArticleData = routeLoader$<Article | null>(async ({ params, status }) => {
   const slug = params.slug;
 //   const apiKey = env.get("NEWS_API_KEY") || "YOUR_API_KEY_HERE"; // Use env vars in production
-const apiKey = '779e60c18504444b826a7e350149bea4' || 'c48d2e29c2624c46923a444bf20399d0' || 'fbae98d6c8c045f5b378e44df0ed23c3' || 'b1aec816d10b4665830fab8552c2391d' || '86a7bb4748374892af3d34531bb610fe' || 'fb2d6c9f8a7b402e9410221202ad11d6' || 'b1b4d242c61e495893998593b1cec71c' || `d5dd011b95db4254bf82c7083d155fcf` || '88051ca9c9d24521a4a114348dc941ac';
+   const apiKey  = "779e60c18504444b826a7e350149bea4" || 'c48d2e29c2624c46923a444bf20399d0' || 'fbae98d6c8c045f5b378e44df0ed23c3' || 'b1aec816d10b4665830fab8552c2391d' || '86a7bb4748374892af3d34531bb610fe' || 'fb2d6c9f8a7b402e9410221202ad11d6' || 'b1b4d242c61e495893998593b1cec71c' || `d5dd011b95db4254bf82c7083d155fcf` || '88051ca9c9d24521a4a114348dc941ac';
   const query = slug.replace(/-/g, " "); // Convert slug back to search query
 
   try {
@@ -51,7 +51,7 @@ const apiKey = '779e60c18504444b826a7e350149bea4' || 'c48d2e29c2624c46923a444bf2
 });
 
 export default component$(() => {
-  const article = useArticleData();
+  const article:any = useArticleData();
   const loc = useLocation();
   const requestedSlug = loc.params.slug;
 
@@ -76,7 +76,7 @@ export default component$(() => {
       <div class="flex items-center gap-4 text-sm text-gray-600 mb-6">
         <span>{article.value.category}</span>
         <span>•</span>
-        <span>{new Date(article.value.publishedAt).toLocaleDateString()}</span>
+        <span>{article && new Date(article?.value?.publishedAt)?.toLocaleDateString()}</span>
       </div>
       {article.value.urlToImage && (
         <img
@@ -92,45 +92,37 @@ export default component$(() => {
   );
 });
 
-export const head: DocumentHead = {
-  title: "QwikPulse - News Article",
-  meta: [
-    {
-      name: "description",
-      content: "Read the latest news articles on QwikPulse",
-    },
-  ],
-  documentHead: ({ resolveValue, params }) => {
-    const article = resolveValue(useArticleData);
-    const slug = params.slug.replace(/-/g, " ");
-    return {
-      title: article
-        ? `${article.title} | QwikPulse`
-        : `Article "${slug}" Not Found | QwikPulse`,
-      meta: [
-        {
-          name: "description",
-          content: article
-            ? `Read about ${article.title} in ${article.category} on QwikPulse`
-            : `The article "${slug}" was not found on QwikPulse`,
-        },
-        {
-          name: "og:title",
-          content: article
-            ? `${article.title} | QwikPulse`
-            : `Article "${slug}" Not Found | QwikPulse`,
-        },
-        {
-          name: "og:description",
-          content: article
-            ? `Read about ${article.title} in ${article.category} on QwikPulse`
-            : `The article "${slug}" was not found on QwikPulse`,
-        },
-        {
-          name: "og:image",
-          content: article?.urlToImage || "/default-og-image.jpg",
-        },
-      ],
-    };
-  },
+export const head: DocumentHead = ({ resolveValue, params }) => {
+  const article = resolveValue(useArticleData) as Article | null;
+  const slug = params.slug.replace(/-/g, " ");
+
+  return {
+    title: article
+      ? `${article.title} | QwikPulse`
+      : `Article "${slug}" Not Found | QwikPulse`,
+    meta: [
+      {
+        name: "description",
+        content: article
+          ? `Read about ${article.title} in ${article.category} on QwikPulse`
+          : `The article "${slug}" was not found on QwikPulse`,
+      },
+      {
+        name: "og:title",
+        content: article
+          ? `${article.title} | QwikPulse`
+          : `Article "${slug}" Not Found | QwikPulse`,
+      },
+      {
+        name: "og:description",
+        content: article
+          ? `Read about ${article.title} in ${article.category} on QwikPulse`
+          : `The article "${slug}" was not found on QwikPulse`,
+      },
+      {
+        name: "og:image",
+        content: article?.urlToImage || "/default-og-image.jpg",
+      },
+    ],
+  };
 };

@@ -1,5 +1,5 @@
 import { component$, Slot, useStyles$ } from "@builder.io/qwik";
-import { Link, routeLoader$ } from "@builder.io/qwik-city";
+import {  routeLoader$ } from "@builder.io/qwik-city";
 import type { RequestHandler } from "@builder.io/qwik-city";
 import styles from "./styles.css?inline";
 import Navbar from "~/components/Navbar";

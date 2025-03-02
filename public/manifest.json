@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "QwikPulse - Instant News Updates",
+  "short_name": "QwikPulse - Instant News Updates",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "QwikPulse delivers fast, reliable news updates across general, technology, business, sports, entertainment, health, and science categories."
+}
